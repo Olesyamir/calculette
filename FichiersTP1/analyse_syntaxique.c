@@ -1,50 +1,42 @@
+
+
 #include <stdio.h>
 #include <stdlib.h> 
 #include <string.h>
 
 #include "analyse_syntaxique.h"
-// ?
 #include "lecture_caracteres.h"
 #include "analyse_lexicale.h"
 
-
-// void reconaitre_lexeme()
-
-// аналог demarer в analyse lexicale 
-void analyser (char *fichier, int *resultat) {
-    // demarre l'analyse lexicale sur le fichier transmis en argument
-
+void analyser(char *fichier, int *resultat) {
     Nature_Lexeme operateur;
 
-   	demarrer (fichier); // * ? 
+    demarrer(fichier);
 
-    typedef enum {E_INIT, E_ENTIER, E_OPERATEUR} Etat_Automate ;
-
+    typedef enum {E_INIT, E_ENTIER, E_OPERATEUR} Etat_Automate;
     Etat_Automate etat = E_INIT;
 
     Lexeme LC = lexeme_courant();
-    afficher (LC) ;
+    afficher(LC);
 
-    while (LC.nature != C_FIN_SEQUENCE) {//condition {
-
-        switch (etat){ //transitions
+    while (LC.nature != FIN_SEQUENCE) {
+        switch (etat) {
             case E_INIT:
-
-                switch (LC.nature){ //
+                switch (LC.nature) {
                     case ENTIER:
-                        // garder et calculer les valeurs
-                        (*resultat) = LC.valeur;  
+                        *resultat = LC.valeur;
                         etat = E_ENTIER;
                         break;
                     default:
                         printf("Erreur syntaxique");
                         exit(0);
                 }
-            
+                break;
+
             case E_ENTIER:
-                switch (LC.nature){
-                    case PLUS: // decrire plus precisement operations
-                    case MOINS: // pour calculer le resultat
+                switch (LC.nature) {
+                    case PLUS:
+                    case MOINS:
                     case MUL:
                     case DIV:
                         operateur = LC.nature;
@@ -53,14 +45,13 @@ void analyser (char *fichier, int *resultat) {
                     default:
                         printf("Erreur syntaxique");
                         exit(0);
-                    }
+                }
+                break;
 
             case E_OPERATEUR:
-                switch (LC.nature){
+                switch (LC.nature) {
                     case ENTIER:
-                        //logique de calcul
-                        
-                        switch (operateur){
+                        switch (operateur) {
                             case PLUS: 
                                 *resultat += LC.valeur;
                                 break;
@@ -77,22 +68,19 @@ void analyser (char *fichier, int *resultat) {
                                 printf("Erreur syntaxique");
                                 exit(0);
                         }
-                        operateur = NULL; // почистить переменную  
                         etat = E_ENTIER;
                         break;
 
                     default:
                         printf("Erreur syntaxique");
                         exit(0);
-                    }
+                }
+                break;
+        }
+
         avancer();
         LC = lexeme_courant();
-        }
     }
 
-    arreter() ; // termine l'analyse lexicale
-
+    arreter();
 }
-
-// получить lexeme courant - локальная переменная в analyse_lexicale
-// нужно получить expression arithmetique / msg d’erreur - как мы его будем хранить?
