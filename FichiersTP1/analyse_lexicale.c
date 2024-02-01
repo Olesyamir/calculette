@@ -25,6 +25,8 @@
 
 /* Les variables et fonctions locales au module */
 
+
+
    Lexeme lexeme_en_cours ;	/* le lexeme courant */
 
    void ajouter_caractere (char *s, char c);
