@@ -11,8 +11,8 @@
 
    typedef enum {
 	  ERREUR_CAR,   // caractere incorrect
-	  CHIFFRE,			// chiffre 
-	  SYMBOLE,			// symbole,
+	 CHIFFRE,			// chiffre 
+	 SYMBOLE,			// symbole,
      PARO , 
      PARF , 
      C_FIN_SEQUENCE   // caractere de fin de sequence     
