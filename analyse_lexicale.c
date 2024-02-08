@@ -33,8 +33,8 @@
    int est_separateur(char c ) ;
    int est_chiffre(char c ) ;
    int est_symbole(char c ) ;
-   int PARO(char c);
-   int PARF(char c);
+   int est_PARO(char c);
+   int est_PARF(char c);
 
    void reconnaitre_lexeme();
 
@@ -119,14 +119,16 @@
 
 
             case PARO :
-               lexeme_en_cours.nature = est_PARO;
+               ajouter_caractere (lexeme_en_cours.chaine, caractere_courant()) ;
+               lexeme_en_cours.nature = PARO_lex;
                etat = E_FIN;
                avancer_car() ;
 					break ;
 
 
             case PARF : 
-            lexeme_en_cours.nature = est_PARF ;
+               ajouter_caractere (lexeme_en_cours.chaine, caractere_courant()) ;
+               lexeme_en_cours.nature = PARF_lex ;
                etat = E_FIN;
                avancer_car() ;
 					break ;
@@ -152,13 +154,6 @@
                         case '/':
                         lexeme_en_cours.nature = DIV;
                            etat =E_FIN;
-                        case '(':
-                        lexeme_en_cours.nature = PARO;
-                              etat = E_FIN;
-                        case ')':
-                        lexeme_en_cours.nature = PARF;
-                              etat = E_FIN;      
-			   			break;
 		       		  default:
 						printf("Erreur_Lexicale") ;
 				 		exit(0) ;
@@ -280,6 +275,8 @@
       		case MUL: return "MUL" ;    
             case DIV : return "DIV" ;              
       		case FIN_SEQUENCE: return "FIN_SEQUENCE" ;
+            case PARF_lex : return "PARF";
+            case PARO_lex : return "PARO";
       		default: return "ERREUR" ;            
 	} ;
    } 
@@ -300,7 +297,7 @@
             printf(", chaine = %s, ", l.chaine) ;
             switch(l.nature) {
                  case ENTIER:
-                      printf("valeur = %d", l.valeur);
+                      printf("valeur = %d", l.valeur);    
                  default:
                       break;
             } ;
