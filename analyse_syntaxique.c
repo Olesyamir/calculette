@@ -1,98 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include "analyse_lexicale.h"
-
-// Fonctions prototypes
-void Rec_eaep(int *resultat);
-void Rec_op(char *op);
-int Evaluer(int vald, char op, int valg);
-
-
-
-void analyser(char *nom_fichier) {
-    // Démarrer l'analyse lexicale
-    demarrer(nom_fichier);
-
-    // Récupérer le résultat de l'analyse syntaxique
-    int resultat;
-    Rec_eaep(&resultat);
-
-    // Vérifier la fin de l'expression
-    if (lexeme_courant().nature != FIN_SEQUENCE) {
-        printf("Erreur : Fin de l'expression inattendue.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    // Arrêter l'analyse lexicale
-    arreter();
-
-    // Afficher le résultat
-    printf("Le résultat de l'expression est : %d\n", resultat);
-}
-
-void Rec_eaep(int *resultat) {
-    switch (lexeme_courant().nature) {
-        case ENTIER:
-            *resultat = lexeme_courant().valeur;
-            avancer();
-            break;
-        case PARO:
-            avancer();
-            Rec_eaep(resultat); // Analyser l'expression entre parenthèses
-            if (lexeme_courant().nature == PARF) {
-                avancer(); // Avancer le lexème pour déplacer le curseur après la parenthèse fermante
-            } else {
-               printf("Erreur : Parenthèse fermante manquante.\n");
-               exit(EXIT_FAILURE);
-            }
-            break;
-        default:
-            printf("Erreur : Attendu ENTIER ou PARO.\n");
-            exit(EXIT_FAILURE);
-            break;
-    }
-}
-
-// Procédure pour reconnaître et analyser un opérateur
-void Rec_op(char *op) {
-    switch (lexeme_courant().nature) {
-        case PLUS:
-        case MOINS:
-        case MUL:
-        case DIV:
-            *op = lexeme_courant().nature;
-            avancer();
-            break;
-        default:
-           printf ("Erreur : Attendu un opérateur.\n");
-           exit(EXIT_FAILURE);
-           break;
-    }
-}
-
-// Fonction pour évaluer une opération arithmétique
-int Evaluer(int vald, char op, int valg) {
-    switch (op) {
-        case PLUS:
-            return vald + valg;
-        case MOINS:
-            return vald - valg;
-        case MUL:
-            return vald * valg;
-        case DIV:
-            if (valg == 0) {
-                printf("Erreur : Division par zéro.\n");
-                exit(EXIT_FAILURE);
-            }
-            return vald / valg;
-        default:
-            printf("Erreur : Opérateur non reconnu.\n");
-            exit(EXIT_FAILURE);
-    }
-}
-
-/*
-#include <stdio.h>
 #include <stdlib.h> 
 #include <string.h>
 
@@ -101,72 +7,97 @@ int Evaluer(int vald, char op, int valg) {
 #include "analyse_lexicale.h"
 
 
-void Rec_eaep(); 
-void Rec_op(); 
+// Rec_op =
+// selon LC().nature
+// cas PLUS, MUL, MOINS : Avancer
+// autre : Erreur
+// fin
 
-void Rec_eaep (){
+void rec_op(){
     Lexeme LC = lexeme_courant();
 
     switch (LC.nature){
-        case ENTIER : 
-            avancer();
-        case PARO_lex : 
-            avancer ();
-            Rec_eaep();
-            Rec_op ();
-            Rec_eap();
-            if (LC.nature = PARF){
-                avancer(); }
-            else {
-                printf ("erreur syntaxique ");
-                exit (1); 
-            }
-            break;
+        // avancer();
+    case PLUS:
+    case MUL:
+    case MOINS:
+    case DIV:
+    afficher(LC);
+        printf("\n");
 
-        default :
-                break;     
+        avancer();
+        break;
+    default:
+        afficher(LC);
+        printf("\n");
 
-
-            }    
-
-
+        printf("Erreur syntaxique - op");
+        exit(0);
     }
 
-
-void Rec_op() {
-    Lexeme LC = lexeme_courant();
-
-    switch (LC.nature) {
-        case PLUS:
-        case MOINS:
-        case MUL:
-        case DIV:
-            avancer();
-            break;
-        default:
-            printf ("erreur syntaxique"); 
-            break;
-    }
 }
 
-void analyser_eaep(char *fichier) {
-    demarrer(fichier);
-    Rec_eaep();
+
+// Rec_eaep =
+// selon LC().nature // LC est le lexeme_courant()
+// cas ENTIER : Avancer
+// cas PARO : Avancer ; Rec_eaep ; Rec_op ; Rec_eaep ;
+// si LC().nature = PARF alors Avancer sinon Erreur
+// autre : Erreur
+// fin
+
+void rec_eaep(){
+    Lexeme LC = lexeme_courant();
+
+    switch (LC.nature){
+        case ENTIER:
+        afficher(LC);
+        printf("\n");
+            avancer();
+            break;
+        case PARO_lex:
+        afficher(LC);
+        printf("\n");
+
+            avancer();
+            rec_eaep();
+            rec_op();
+            rec_eaep();
+
+            Lexeme LC = lexeme_courant();
+
+            if (LC.nature == PARF_lex){
+                afficher(LC);
+        printf("\n");
+        
+                avancer();
+            }
+            else {
+                printf("Erreur syntaxique - par pas ferme");
+                exit(0);
+            }
+
+            break;
+        // autre : Erreur
+        default:
+            printf("Erreur syntaxique - def");
+            exit(0);
+        }
+}
+
+
+
+void analyser(char *nom_fichier) {
+    demarrer(nom_fichier);
+    rec_eaep();
     if (lexeme_courant().nature != FIN_SEQUENCE) {
-        erreur_syntaxique("Séquence incorrecte.");
+        printf("Erreur syntaxique ???");
+        exit(0);
     }
     arreter();
 }
-*/
 
 
-
-
-
-
-
-
-
-
-
-
+// void analyser(char *nom_fichier) {
+    
+// }
